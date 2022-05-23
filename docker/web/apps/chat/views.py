@@ -23,5 +23,5 @@ def room(request, room_name):
     })
 
 def chat(message):
+    
     return f'{message} - 123'
-

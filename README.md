@@ -20,11 +20,12 @@ The GitHub repository houses the components needed to build cust as a container.
     git clone -b release https://github.com/pvenv/cust-docker.git
 ```
 
-**Step 3:** Creating **.env** files (see the **Env examples** section):
+**Step 3:** Creating **.env** files in cust-docker folder (see the **Env examples** section):
 
 **Step 4:** Running and usage the project:
 ```bash
     cd cust-docker
+    chmod +x docker/web/entrypoint.sh
     docker-compose up -d
 ```
 
@@ -82,14 +83,16 @@ To check the version installed on your system run `docker --version` and `docker
 ```
 
 ## Demo
-...
+In the future, the site will be fully open for viewing, at the link http://custproject.ru
 
 ## Screenshots
-...
+
+### Wiki page
+![image](https://user-images.githubusercontent.com/92352077/168686542-ad378adb-b563-4750-b244-fe8568c8b27d.png)
 
 ## Contributing
 
-If you are looking to contribute to Jitsi Meet, first of all, thank you!
+If you are looking to contribute to this project, first of all, thank you!
 
 
 <br />
