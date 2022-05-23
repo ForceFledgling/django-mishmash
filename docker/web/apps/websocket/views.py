@@ -6,7 +6,6 @@ from unittest import result
 from django.shortcuts import render
 from django.utils.safestring import mark_safe
 
-from apps.chat.views import chat
 from apps.wiki.views import wiki
 
 def websocket(app, username, message):

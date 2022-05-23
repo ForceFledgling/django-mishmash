@@ -1,11 +1,11 @@
-from re import T
-from tabnanny import verbose
-from django.db import models
-from ckeditor_uploader.fields import RichTextUploadingField
 from datetime import datetime
 
+from ckeditor_uploader.fields import RichTextUploadingField
+
+from django.db import models
+
+
 class Category(models.Model):
-    id = models.AutoField(primary_key=True, unique=True)
     name = models.CharField(max_length=40, unique=True)
     priority = models.IntegerField()
 
@@ -16,8 +16,8 @@ class Category(models.Model):
         verbose_name = "категории"
         verbose_name_plural = "Категории"
 
+
 class Page(models.Model):
-    id = models.AutoField(primary_key=True, unique=True)
     name = models.CharField(max_length=115, unique=True, verbose_name="Название страницы")
     category = models.ForeignKey(Category, on_delete=models.CASCADE, blank=True, default=1, verbose_name="Категория")
     content = RichTextUploadingField(blank=True, null=True, default='', verbose_name="Контент")
@@ -26,7 +26,7 @@ class Page(models.Model):
 
     def __str__(self):
         return f'{self.name} ({self.id})'
-    
+
     def save(self, *args, **kwargs):
         '''Автоматически обновляем дату редактирования при сохранении и создании'''
         if self.date_publish is None:

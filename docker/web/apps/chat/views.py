@@ -21,7 +21,3 @@ def room(request, room_name):
         'app': f'{mark_safe(json.dumps("search"))}',
         'room_name_json': mark_safe(json.dumps(room_name)),
     })
-
-def chat(message):
-    
-    return f'{message} - 123'
