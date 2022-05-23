@@ -1,18 +1,24 @@
-from asgiref.sync import async_to_sync
-from channels.generic.websocket import WebsocketConsumer
 import json
 from datetime import datetime
-from .views import websocket
+
 from apps.logging.views import log
-from django.shortcuts import render
+
+from asgiref.sync import async_to_sync
+
+from channels.exceptions import DenyConnection
+from channels.generic.websocket import WebsocketConsumer
 
 from django.contrib.auth.models import AnonymousUser
-from channels.exceptions import DenyConnection
 
 from portal.settings import global_variables
+
+from .views import websocket
+
 global_variables['used_channels'] = 0
 
+
 class GlobalConsumer(WebsocketConsumer):
+
     def group_generation(self):
         '''
             Создает уникальную группу приложение-порльзователь-порт
@@ -31,36 +37,40 @@ class GlobalConsumer(WebsocketConsumer):
 
         apps_without_authentication = ['dismantling']
 
-        if (self.scope['user'] == AnonymousUser()) and (self.scope['url_route']['kwargs']['app'] not in apps_without_authentication):
-            log(self.scope["user"], self.scope['url_route']['kwargs']['app'], f'Попытка запуска WebSocket со стороннего сайта, либо без учетной записи.')
+        if self.scope['user'] == AnonymousUser() and \
+                self.scope['url_route']['kwargs']['app'] not in apps_without_authentication:
+            log(
+                self.scope["user"],
+                self.scope['url_route']['kwargs']['app'],
+                'Попытка запуска WebSocket со стороннего сайта, либо без учетной записи.',
+            )
             raise DenyConnection("Такого пользователя не существует")
-        
-        #генерируем название локальной группы
+
+        # генерируем название локальной группы
         self.group_generation()
-        
-        #если пользователь залогинен подключаемся к глобальной группе
+
+        # если пользователь залогинен подключаемся к глобальной группе
         async_to_sync(self.channel_layer.group_add)(
             'general',
-            self.channel_name
+            self.channel_name,
         )
-        #подключаемся к группе
+        # подключаемся к группе
         async_to_sync(self.channel_layer.group_add)(
             self.group,
-            self.channel_name
+            self.channel_name,
         )
 
-        #отправляем локальное сообщение о подключении
+        # отправляем локальное сообщение о подключении
         self.connect_message()
 
-        #отправляем глобальное сообщение о подключении
+        # отправляем глобальное сообщение о подключении
         self.broadcast_message_send('Подключился')
 
         global_variables['used_channels'] += 1
         self.accept()
-        
-        
-    
+
     def connect_message(self):
+
         '''Дефолтное сообщение при подключении пользователя в группу'''
 
         now = datetime.now()
@@ -69,15 +79,16 @@ class GlobalConsumer(WebsocketConsumer):
             self.group,
             {
                 'type': 'message_send',
-                'message': f'{dt_string} - Дефолтное сообщение. Пользователь {self.user} открыл приложение {self.app}!\nЕго группа - {self.group}',
-            }
+                'message': f'{dt_string} - Дефолтное сообщение. Пользователь {self.user} открыл приложение \
+                    {self.app}!\nЕго группа - {self.group}',
+            },
         )
-    
+
     def broadcast_message_send(self, message):
         self.app = self.scope['url_route']['kwargs']['app']
         if self.app != 'general':
             log(self.scope["user"], self.app, message)
-        
+
         # async_to_sync(self.channel_layer.group_send)(
         #     'general',
         #     {
@@ -91,7 +102,7 @@ class GlobalConsumer(WebsocketConsumer):
         global_variables['used_channels'] -= 1
         async_to_sync(self.channel_layer.group_discard)(
             self.group,
-            self.channel_name
+            self.channel_name,
         )
 
     def receive(self, text_data):
@@ -105,7 +116,7 @@ class GlobalConsumer(WebsocketConsumer):
             {
                 'type': 'message_send',
                 'message': message,
-            }
+            },
         )
 
     def message_send(self, event):
