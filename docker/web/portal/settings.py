@@ -177,7 +177,9 @@ CKEDITOR_JQUERY_URL = '//ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.j
 AUTHENTICATION_BACKENDS = (
     # 'apps.security.auth.ldap', #добавил самописную аутентификацию\регистрацию по ldap
     'django.contrib.auth.backends.ModelBackend',
-    )
+)
 
 LOGIN_REDIRECT_URL = '/'
 LOGOUT_REDIRECT_URL = '/'
+
+DEFAULT_AUTO_FIELD = 'django.db.models.AutoField'
