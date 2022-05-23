@@ -40,7 +40,7 @@ The default credentials are:
 Example env/cust.env file:
 ```bash
     #BASE
-    VERSION='0.0.3'
+    VERSION='x.x.x'
     DEBUG='True'
     LOCAL_IP='185.105.89.18'
     SECRET_KEY='dm42@3kbj10b2gse&h%o)1ef&rn42k)e_a'
